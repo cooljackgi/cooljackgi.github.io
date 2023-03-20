@@ -59,26 +59,58 @@
 	</table>
 
 	<script>
+		var dataKey = "tableData";
+		var tableBody = document.getElementById("table").getElementsByTagName("tbody")[0];
+		var tableData = JSON.parse(localStorage.getItem(dataKey));
+
+		if (tableData) {
+			for (var i = 0; i < tableData.length; i++) {
+				var row = document.createElement("tr");
+				for (var j = 0; j < tableData[i].length; j++) {
+					var cell = document.createElement("td");
+					cell.contentEditable = true;
+					var text = document.createTextNode(tableData[i][j]);
+					cell.appendChild(text);
+					row.appendChild(cell);
+				}
+				row.addEventListener("click", function() {
+					var cells = this.getElementsByTagName("td");
+					for (var k = 0; k < cells.length; k++) {
+						cells[k].contentEditable = true;
+					}
+				});
+				tableBody.appendChild(row);
+			}
+		}
+
 		document.getElementById("data").addEventListener("input", function() {
 			var data = this.value.trim();
 			if (data) {
 				var items = data.split('\n');
-				var tableBody = document.getElementById("table").getElementsByTagName("tbody")[0];
+				tableData = [];
 				tableBody.innerHTML = "";
 				for (var i = 0; i < items.length; i++) {
 					var fields = items[i].split('\t');
 					var row = document.createElement("tr");
+					var rowData = [];
 					for (var j = 0; j < fields.length; j++) {
 						var cell = document.createElement("td");
+						cell.contentEditable = true;
 						var text = document.createTextNode(fields[j]);
 						cell.appendChild(text);
 						row.appendChild(cell);
+						rowData.push(fields[j]);
 					}
 					row.addEventListener("click", function() {
-						alert("Sie haben Zeile " + (this.rowIndex + 1) + " ausgewählt");
+						var cells = this.getElementsByTagName("td");
+						for (var k = 0; k < cells.length; k++) {
+							cells[k].contentEditable = true;
+						}
 					});
 					tableBody.appendChild(row);
+					tableData.push(rowData);
 				}
+				localStorage.setItem(dataKey, JSON.stringify(tableData));
 			}
 		});
 	</script>
