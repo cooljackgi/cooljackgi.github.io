@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Meine Webseite</title>
+	<title>Drag-and-Drop Beispiel</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<style>
+		.draggable {
+			width: 100px;
+			height: 100px;
+			background-color: #ccc;
+			border: 1px solid #000;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	</style>
 </head>
 <body>
-	<h1>Willkommen auf meiner Webseite</h1>
-	<p>Ich bin gerade dabei, HTML zu lernen.</p>
-	<p>Das ist ein <a href="https://www.google.com">Link zu Google</a>.</p>
+	<p>Kopieren Sie die Daten in das untenstehende Textfeld:</p>
+	<textarea id="data"></textarea>
+
+	<div id="container"></div>
+
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#container').droppable({
+				drop: function(event, ui) {
+					$(ui.draggable).appendTo($(this));
+				}
+			});
+
+			$('#data').on('input', function() {
+				var data = $(this).val().trim();
+				if (data) {
+					var items = data.split('\n');
+					for (var i = 0; i < items.length; i++) {
+						var item = $('<div class="draggable">' + items[i] + '</div>');
+						$('#container').append(item);
+						item.draggable();
+					}
+				}
+			});
+		});
+	</script>
 </body>
 </html>
