@@ -1,47 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Drag-and-Drop Beispiel</title>
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<title>Importieren und Anklicken von Tabelleneinträgen</title>
 	<style>
-		.draggable {
-			width: 100px;
-			height: 100px;
-			background-color: #ccc;
-			border: 1px solid #000;
-			position: absolute;
-			top: 0;
-			left: 0;
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		th, td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+
+		tr:nth-child(even) {
+			background-color: #f2f2f2;
+		}
+
+		tr:hover {
+			background-color: #ddd;
+		}
+
+		input[type="text"] {
+			width: 100%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			box-sizing: border-box;
+			border: 2px solid #ccc;
+			border-radius: 4px;
+			background-color: #f8f8f8;
+			font-size: 16px;
 		}
 	</style>
 </head>
 <body>
-	<p>Kopieren Sie die Daten in das untenstehende Textfeld:</p>
-	<textarea id="data"></textarea>
+	<p>Kopieren Sie die Daten in das untenstehende Feld:</p>
+	<input type="text" id="data" placeholder="Geben Sie hier Ihre Daten ein">
 
-	<div id="container"></div>
+	<table id="table">
+		<thead>
+			<tr>
+				<th>Monats-Mail</th>
+				<th>2. Mail</th>
+				<th>1 Woche vorh!</th>
+				<th>PLZ</th>
+				<th>Ort</th>
+				<th>GM-Anzahl</th>
+				<th>FH</th>
+				<th>b.S.</th>
+				<th>Prüfdatum 2022</th>
+				<th>Prüfdatum 2023</th>
+				<th>Anmerkungen</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
 
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 	<script>
-		$(document).ready(function() {
-			$('#container').droppable({
-				drop: function(event, ui) {
-					$(ui.draggable).appendTo($(this));
-				}
-			});
-
-			$('#data').on('input', function() {
-				var data = $(this).val().trim();
-				if (data) {
-					var items = data.split('\n');
-					for (var i = 0; i < items.length; i++) {
-						var item = $('<div class="draggable">' + items[i] + '</div>');
-						$('#container').append(item);
-						item.draggable();
+		document.getElementById("data").addEventListener("input", function() {
+			var data = this.value.trim();
+			if (data) {
+				var items = data.split('\n');
+				var tableBody = document.getElementById("table").getElementsByTagName("tbody")[0];
+				tableBody.innerHTML = "";
+				for (var i = 0; i < items.length; i++) {
+					var fields = items[i].split('\t');
+					var row = document.createElement("tr");
+					for (var j = 0; j < fields.length; j++) {
+						var cell = document.createElement("td");
+						var text = document.createTextNode(fields[j]);
+						cell.appendChild(text);
+						row.appendChild(cell);
 					}
+					row.addEventListener("click", function() {
+						alert("Sie haben Zeile " + (this.rowIndex + 1) + " ausgewählt");
+					});
+					tableBody.appendChild(row);
 				}
-			});
+			}
 		});
 	</script>
 </body>
